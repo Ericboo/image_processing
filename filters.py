@@ -62,10 +62,10 @@ def average_smoothing_periodic_convolution(imagem, maskSize):
                 for j in range(-neighbors, neighbors + 1):
                     xp = x + i
                     yp = y + j
-                    if (xp < 0): xp = 0
-                    if (yp < 0): yp = 0
-                    if (xp >= imagem.width): xp = imagem.width - 1
-                    if (yp >= imagem.height): yp = imagem.height - 1
+                    if (xp < 0): xp = 0 + i
+                    if (yp < 0): yp = 0 + j
+                    if (xp >= imagem.width): xp = imagem.width - 1 - i
+                    if (yp >= imagem.height): yp = imagem.height - 1 - j
                     rsum += imagem.getpixel((xp, yp))[0]
                     gsum += imagem.getpixel((xp, yp))[1]
                     bsum += imagem.getpixel((xp, yp))[2]
