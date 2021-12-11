@@ -28,7 +28,6 @@ def border_replication(imagem, maskSize):
     return img_alterada 
 
 
-
 def average_smoothing(img_alterada, maskSize):
     neighbors = Math.floor(maskSize/2)
     #Prepara a criação de uma imagem de saída.
@@ -51,6 +50,34 @@ def average_smoothing(img_alterada, maskSize):
     return img_alterada
 
 
+def average_smoothing_periodic_convolution(imagem, maskSize):
+    neighbors = Math.floor(maskSize / 2)
+    #Prepara a criação de uma imagem de saída.
+    for x in range(imagem.width):
+        for y in range(imagem.height):
+            rsum = 0
+            gsum = 0
+            bsum = 0
+            for i in range(-neighbors, neighbors + 1):
+                for j in range(-neighbors, neighbors + 1):
+                    xp = x + i
+                    yp = y + j
+                    if (xp < 0): xp = 0
+                    if (yp < 0): yp = 0
+                    if (xp >= imagem.width): xp = imagem.width - 1
+                    if (yp >= imagem.height): yp = imagem.height - 1
+                    rsum += imagem.getpixel((xp, yp))[0]
+                    gsum += imagem.getpixel((xp, yp))[1]
+                    bsum += imagem.getpixel((xp, yp))[2]
+            rmed = int(rsum / maskSize**2)
+            gmed = int(gsum / maskSize**2)
+            bmed = int(bsum / maskSize**2)
+            imagem.putpixel(
+                (x, y), value=(rmed, gmed, bmed)
+            )
+    return imagem
+
+
 exemplos = []
 img_alteradas = []
 
@@ -58,8 +85,11 @@ img_alteradas = []
 exemplos.append(padding_zero(Image.open("exemplo1.jpg"), maskSize=3)) 
 img_alteradas.append(average_smoothing(exemplos[0], maskSize= 3))
 
-exemplos.append(border_replication(Image.open("exemplo2.jpg"), maskSize=5)) 
+exemplos.append(border_replication(Image.open("exemplo2.jpg"), maskSize=7)) 
 img_alteradas.append(average_smoothing(exemplos[1], maskSize= 5))
+
+exemplos.append(Image.open("exemplo3.jpg")) 
+img_alteradas.append(average_smoothing_periodic_convolution(exemplos[2], maskSize= 3))
 
 #Monta uma imagem de resultado
 for x in range(0, len(exemplos)):
