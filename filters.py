@@ -15,10 +15,9 @@ def padding_zero(imagem, size):
     return img_alterada 
 
 
-def average_smoothing(imagem, size):
+def average_smoothing(img_alterada, size):
     mask = Math.floor(size/2)
     #Prepara a criação de uma imagem de saída.
-    img_alterada = padding_zero(imagem, size)
     for x in range(mask, img_alterada.width - mask):
         for y in range(mask, img_alterada.height - mask):
             rsum = 0
@@ -42,7 +41,7 @@ exemplos = []
 img_alteradas = []
 
 #Abre a imagem.
-exemplos.append(Image.open("exemplo3.jpg")) 
+exemplos.append(padding_zero(Image.open("exemplo1.jpg"), size=5)) 
 img_alteradas.append(average_smoothing(exemplos[0], size= 5))
 
 #Monta uma imagem de resultado
