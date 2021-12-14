@@ -50,12 +50,11 @@ def sharpening(imagem):
 
 
 def generate_gauss_kernel(size, sigma):
-    kernel = [[], [], []]
-    for x in range(size):
-        for y in range(size):
-            kernel[x].append(( (1/(2 * Math.pi * sigma**2) )* Math.e ** - ((x**2 + y**2) / (2 * sigma ** 2))))
-            print(kernel[x][y] * 16)
-        print()
+    neighbour = Math.floor(size/2)
+    kernel = [[], [], [], [], []]
+    for x in range(-neighbour, neighbour + 1):
+        for y in range(-neighbour, neighbour + 1):
+            kernel[x + neighbour].append(( (1/(2 * Math.pi * sigma**2) )* Math.e ** - ((x**2 + y**2) / (2 * sigma ** 2))))
     return kernel
 
 def gaussian_smooth(imagem, size, sigma):
@@ -63,7 +62,6 @@ def gaussian_smooth(imagem, size, sigma):
     kernel = generate_gauss_kernel(size, sigma)
     #Prepara a criação de uma imagem de saída.
     img_alterada = Image.new('RGB', imagem.size)
-    return img_alterada
     for x in range(1, imagem.width - 1):
         for y in range(1, imagem.height - 1):
             sum = [0, 0, 0]
@@ -91,7 +89,7 @@ exemplos.append(Image.open("exemplo2.jpg"))
 img_alteradas.append(sharpening(exemplos[1]))
 
 exemplos.append(Image.open("exemplo3.jpg")) 
-img_alteradas.append(gaussian_smooth(exemplos[2], sigma= 1, size= 3))
+img_alteradas.append(gaussian_smooth(exemplos[2], sigma= 1, size= 5))
 
 #Monta uma imagem de resultado
 for x in range(0, len(exemplos)):
