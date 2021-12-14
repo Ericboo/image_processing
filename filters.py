@@ -4,9 +4,9 @@ import math as Math
 def laplacian(imagem):
     #define o kernel 3x3 da imagem
     kernel = [[], [], []]
-    kernel[0] = [0, -1, 0]
-    kernel[1] = [-1, 4, -1] 
-    kernel[2] = [0, -1, 0]
+    kernel[0] = [-1, -1, -1]
+    kernel[1] = [-1, 8, -1] 
+    kernel[2] = [-1, -1, -1]
     #Prepara a criação de uma imagem de saída.
     img_alterada = Image.new('RGB', imagem.size)
     for x in range(1, imagem.width - 1):
@@ -82,6 +82,22 @@ def gaussian_smooth(imagem, size, sigma):
                 (x, y), value=(int(sum[0] / weight), int(sum[1] / weight), int(sum[2] / weight))
             )
     return img_alterada
+
+
+def unsharp(imagem, k):
+    #Prepara a criação de uma imagem de saída.
+    img_alterada = Image.new('RGB', imagem.size)
+    img_alterada_smooth = gaussian_smooth(imagem, 5, 2)
+    for x in range(1, imagem.width - 1):
+        for y in range(1, imagem.height - 1):
+            unsharp = [0, 0, 0]
+            unsharp[0] = imagem.getpixel((x, y))[0] - k * (img_alterada_smooth.getpixel((x, y))[0])
+            unsharp[1] = imagem.getpixel((x, y))[1] - k * (img_alterada_smooth.getpixel((x, y))[1])
+            unsharp[2] = imagem.getpixel((x, y))[2] - k * (img_alterada_smooth.getpixel((x, y))[2])
+            img_alterada.putpixel(
+                (x, y), value=(int(unsharp[0] / k), int(unsharp[1] / k), int(unsharp[2] / k))
+            )
+    return img_alterada
     
 
 exemplos = []
@@ -94,10 +110,13 @@ img_alteradas.append(laplacian(exemplos[0]))
 exemplos.append(Image.open("exemplo2.jpg")) 
 img_alteradas.append(sharpening(exemplos[1]))
 
-sigma = 2
+sigma = 1
 size = 5
 exemplos.append(Image.open("exemplo3.jpg")) 
-img_alteradas.append(laplacian(gaussian_smooth(exemplos[len(exemplos) - 1], size, sigma)))
+img_alteradas.append(laplacian(gaussian_smooth(exemplos[2], size, sigma)))
+
+exemplos.append(Image.open("exemplo4.jpg")) 
+img_alteradas.append(unsharp(exemplos[3], k=0.7))
 
 #Monta uma imagem de resultado
 for x in range(0, len(exemplos)):
