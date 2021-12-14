@@ -1,5 +1,12 @@
-from PIL import Image
+from PIL import Image, ImageFont
 import math as Math
+
+def showImage(img, contadorExemplos):
+    #Monta uma imagem de resultado
+    print("Iniciando demonstração")
+    resultado = img
+    resultado.save("result{}.jpg".format(contadorExemplos))
+    resultado.show()
 
 def laplacian(imagem):
     #define o kernel 3x3 da imagem
@@ -98,28 +105,67 @@ def unsharp(imagem, k):
                 (x, y), value=(int(unsharp[0] / k), int(unsharp[1] / k), int(unsharp[2] / k))
             )
     return img_alterada
+
+
+def high_boost(imagem, a):
+    #define o kernel 3x3 da imagem
+    kernel = [[], [], []]
+    kernel[0] = [  0, -1, 0   ]
+    kernel[1] = [-1, a + 4, -1] 
+    kernel[2] = [  0, -1, 0   ]
+    #Prepara a criação de uma imagem de saída.
+    img_alterada = Image.new('RGB', imagem.size)
+    for x in range(1, imagem.width - 1):
+        for y in range(1, imagem.height - 1):
+            sum = [0, 0, 0]
+            weight = 0
+            for i in range(-1, 2):
+                for j in range(-1, 2):
+                    weight += kernel[i + 1][j + 1]
+                    xp = x + i
+                    yp = y + j
+                    sum[0] += (imagem.getpixel((xp, yp))[0] * kernel[i + 1][j + 1])
+                    sum[1] += (imagem.getpixel((xp, yp))[1] * kernel[i + 1][j + 1])
+                    sum[2] += (imagem.getpixel((xp, yp))[2] * kernel[i + 1][j + 1])
+            img_alterada.putpixel(
+                (x, y), value=(int(sum[0] / weight), int(sum[1] / weight), int(sum[2] / weight))
+            )
+    return img_alterada
+
     
 
 exemplos = []
-img_alteradas = []
 
 #Abre a imagem.
+print("Laplacian...", end="")
 exemplos.append(Image.open("exemplo1.jpg")) 
-img_alteradas.append(laplacian(exemplos[0]))
+image = laplacian(exemplos[0])
+print("OK.")
+showImage(image, contadorExemplos= 1)
 
+print("Sharpening...", end="")
 exemplos.append(Image.open("exemplo2.jpg")) 
-img_alteradas.append(sharpening(exemplos[1]))
+image = sharpening(exemplos[1])
+print("OK.")
+showImage(image, contadorExemplos= 2)
 
+print("LoG...", end="")
 sigma = 1
 size = 5
 exemplos.append(Image.open("exemplo3.jpg")) 
-img_alteradas.append(laplacian(gaussian_smooth(exemplos[2], size, sigma)))
+image = laplacian(gaussian_smooth(exemplos[2], size, sigma))
+print("OK.")
+showImage(image, contadorExemplos= 3)
 
+print("Unsharp...", end="")
 exemplos.append(Image.open("exemplo4.jpg")) 
-img_alteradas.append(unsharp(exemplos[3], k=0.7))
+image = unsharp(exemplos[3], k= 0.5)
+print("OK.")
+showImage(image, contadorExemplos= 4)
 
-#Monta uma imagem de resultado
-for x in range(0, len(exemplos)):
-    resultado = img_alteradas[x]
-    resultado.save("result{}.jpg".format(x + 1))
-    resultado.show()
+print("High boost...", end="")
+exemplos.append(Image.open("exemplo5.jpg")) 
+image = high_boost(exemplos[4], a=2)
+print("OK.")
+showImage(image, contadorExemplos= 5)
+
