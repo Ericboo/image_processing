@@ -1,4 +1,4 @@
-from PIL import Image, ImageFont
+from PIL import Image
 import math as Math
 
 def showImage(img, contadorExemplos):
@@ -132,40 +132,63 @@ def high_boost(imagem, a):
             )
     return img_alterada
 
-    
+
+def sobel(imagem):
+    #Prepara a criação de uma imagem de saída.
+    img_alterada = Image.new('RGB', imagem.size)
+    for x in range(1, imagem.width - 1):
+        for y in range(1, imagem.height - 1):
+            xp = x + 1 
+            yp = y + 1 
+            xp1 = x - 1 
+            yp1 = y - 1
+            gx = imagem.getpixel((xp1, y))[0] - imagem.getpixel((xp, y))[0] 
+            gy = imagem.getpixel((x, yp1))[0] - imagem.getpixel((xp, yp))[0] 
+            result = Math.sqrt(gx**2 + gy**2)
+            img_alterada.putpixel(
+                (x, y), value=(int(result), int(result), int(result))
+            )
+    return img_alterada
+
 
 exemplos = []
 
 #Abre a imagem.
-print("Laplacian...", end="")
-exemplos.append(Image.open("exemplo1.jpg")) 
-image = laplacian(exemplos[0])
-print("OK.")
-showImage(image, contadorExemplos= 1)
 
-print("Sharpening...", end="")
-exemplos.append(Image.open("exemplo2.jpg")) 
-image = sharpening(exemplos[1])
-print("OK.")
-showImage(image, contadorExemplos= 2)
+# print("Laplacian...", end="")
+# exemplos.append(Image.open("exemplo1.jpg")) 
+# image = laplacian(exemplos[0])
+# print("OK.")
+# showImage(image, contadorExemplos= 1)
 
-print("LoG...", end="")
-sigma = 1
-size = 5
-exemplos.append(Image.open("exemplo3.jpg")) 
-image = laplacian(gaussian_smooth(exemplos[2], size, sigma))
-print("OK.")
-showImage(image, contadorExemplos= 3)
+# print("Sharpening...", end="")
+# exemplos.append(Image.open("exemplo2.jpg")) 
+# image = sharpening(exemplos[1])
+# print("OK.")
+# showImage(image, contadorExemplos= 2)
 
-print("Unsharp...", end="")
-exemplos.append(Image.open("exemplo4.jpg")) 
-image = unsharp(exemplos[3], k= 0.5)
-print("OK.")
-showImage(image, contadorExemplos= 4)
+# print("LoG...", end="")
+# sigma = 1
+# size = 5
+# exemplos.append(Image.open("exemplo3.jpg")) 
+# image = laplacian(gaussian_smooth(exemplos[2], size, sigma))
+# print("OK.")
+# showImage(image, contadorExemplos= 3)
 
-print("High boost...", end="")
-exemplos.append(Image.open("exemplo5.jpg")) 
-image = high_boost(exemplos[4], a=2)
-print("OK.")
-showImage(image, contadorExemplos= 5)
+# print("Unsharp...", end="")
+# exemplos.append(Image.open("exemplo4.jpg")) 
+# image = unsharp(exemplos[3], k= 0.5)
+# print("OK.")
+# showImage(image, contadorExemplos= 4)
 
+# print("High boost...", end="")
+# exemplos.append(Image.open("exemplo5.jpg")) 
+# image = high_boost(exemplos[4], a=2)
+# print("OK.")
+# showImage(image, contadorExemplos= 5)
+
+print("sobel...", end="")
+exemplos.append(Image.open("exemplo7.jpg")) 
+image = sobel(exemplos[0])
+print("OK.")
+showImage(image, contadorExemplos= 7)
