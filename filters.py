@@ -133,6 +133,22 @@ def high_boost(imagem, a):
     return img_alterada
 
 
+def gradient(imagem, axis):
+    #Prepara a criação de uma imagem de saída.
+    img_alterada = Image.new('RGB', imagem.size)
+    for x in range(1, imagem.width - 1):
+        for y in range(1, imagem.height - 1):
+            xp = x + 1 if axis == 'x' else x
+            yp = y + 1 if axis == 'y' else y
+            xp1 = x - 1 if axis == 'x' else x
+            yp1 = y - 1 if axis == 'y' else y
+            gx = imagem.getpixel((xp1, yp1))[0] - imagem.getpixel((xp, yp))[0] 
+            img_alterada.putpixel(
+                (x, y), value=(int(gx), int(gx), int(gx))
+            )
+    return img_alterada
+
+
 def sobel(imagem):
     #Prepara a criação de uma imagem de saída.
     img_alterada = Image.new('RGB', imagem.size)
@@ -187,7 +203,13 @@ exemplos = []
 # print("OK.")
 # showImage(image, contadorExemplos= 5)
 
-print("sobel...", end="")
+# print("Gradient...", end="")
+# exemplos.append(Image.open("exemplo6.jpg")) 
+# image = gradient(exemplos[0], axis='y')
+# print("OK.")
+# showImage(image, contadorExemplos= 6)
+
+print("Sobel...", end="")
 exemplos.append(Image.open("exemplo7.jpg")) 
 image = sobel(exemplos[0])
 print("OK.")
