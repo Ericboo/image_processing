@@ -1,6 +1,7 @@
 from PIL import Image
 import math as Math
 
+
 def padding_zero(imagem, maskSize):
     neighbors = Math.floor(maskSize / 2)
     img_alterada = Image.new("RGB", (imagem.width + neighbors * 2, imagem.height + neighbors * 2))
